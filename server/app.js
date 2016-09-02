@@ -1,6 +1,6 @@
 // CONSTANTS
 const PORT = process.env.PORT || 8000;
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost/YOUR_DB_NAME';
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost/ufcfighters';
 
 // PACKAGE REQUIRES
 const bodyParser = require('body-parser');
@@ -12,13 +12,29 @@ const webpack = require('webpack');
 const webpackConfig = require('../webpack.config');
 
 // DB CONNECT
-require('mongoose').connect(MONGO_URI, err => {
+const mongoose = require('mongoose');
+mongoose.connect(MONGO_URI, err => {
   if(err) throw err;
   console.log(`MongoDB connected to ${MONGO_URI}`);
 });
 
+mongoose.Promise = Promise;
+
 // APP DECLARATION
 const app = express();
+
+app.use((req, res, next) => {
+
+  res.error = function(err) {
+    res.status(400).send(err);
+  }
+
+  res.handle = function(err, data) {
+    res.status(err ? 400 : 200).send(err || data);
+  }
+
+  next();
+})
 
 // WEBPACK CONFIG
 const compiler = webpack(webpackConfig);
