@@ -7,8 +7,10 @@ import Layout from './components/Layout'
 import Home from './components/Home';
 import FighterPage from './components/FighterPage';
 
+import store from './store'
+
 render(
-  <Provider>
+  <Provider store={store}>
     <Router history={browserHistory}>
       <Route path='/' component={Layout}>
         <IndexRoute component={Home}/>
